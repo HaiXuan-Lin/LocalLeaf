@@ -16,6 +16,9 @@
     "@electron/packager": "^19.0.0",
     "electron": "^45.0.0"
   },
+  "overrides": {
+    "yauzl": "^3.4.0"
+  },
   "localleaf": {
     "bundleId": "app.localleaf.desktop"
   }

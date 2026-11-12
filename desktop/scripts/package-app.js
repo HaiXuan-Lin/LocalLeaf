@@ -130,7 +130,26 @@ async function main() {
   console.log(result);
 }
 
-main().catch((error) => {
-  console.error(error.stack || error);
-  process.exit(1);
+// Node exits quietly with status 0 when a promise never settles (seen with an
+// unzip library that stalls on newer Node versions). Never let that pass for
+// a finished package.
+let finished = false;
+process.on("exit", (code) => {
+  if (!finished && code === 0) {
+    console.error(
+      `error: packaging stopped before it finished (Node ${process.version}).`,
+    );
+    process.exitCode = 1;
+  }
 });
+
+main().then(
+  () => {
+    finished = true;
+  },
+  (error) => {
+    finished = true;
+    console.error(error.stack || error);
+    process.exitCode = 1;
+  },
+);
