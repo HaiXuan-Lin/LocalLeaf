@@ -1,0 +1,57 @@
+LocalLeaf
+=========
+
+LocalLeaf is a modified version of Overleaf Community Edition.
+
+Original work
+-------------
+
+  Overleaf Community Edition
+  https://github.com/overleaf/overleaf
+  Copyright (c) Overleaf, 2014-2025
+  Licensed under the GNU Affero General Public License, version 3 (see LICENSE)
+
+  Version used: commit e039ad26c5bf5422eb57b89fc7e57c75055e631d (17 September 2026).
+  The current base commit is recorded in desktop/upstream.json.
+
+Modifications
+-------------
+
+  LocalLeaf turns the Overleaf editor into an offline macOS application for a
+  single user who works in a local folder. The modifications were first
+  published in November 2026 at https://github.com/HaiXuan-Lin/LocalLeaf and
+  are licensed under the same GNU Affero General Public License, version 3.
+
+  Added by LocalLeaf:
+    desktop/                         local backend, packaging, tests, documents
+    services/web/modules/desktop/    front-end module for the desktop app
+    build.sh, install.sh             build and installation scripts
+    NOTICE, CITATION.cff             this notice and citation data
+
+  Changed by LocalLeaf:
+    README.md                        replaced by LocalLeaf's README
+    .gitignore                       lines appended
+
+  No other file of Overleaf is modified in the source tree. When the app is
+  built, the front-end modules listed in
+  services/web/modules/desktop/replacements.js are substituted by the versions
+  in services/web/modules/desktop/frontend/js/replacements/.
+
+  The git history of this repository shows every change in full.
+
+Trademarks
+----------
+
+  "Overleaf" is a trademark of its owner. LocalLeaf is an independent project
+  and is not affiliated with, endorsed by or supported by Overleaf. Overleaf's
+  name is used only to identify the original work; its logos are not used by
+  the application.
+
+Third-party software
+--------------------
+
+  The application bundles the Electron runtime (MIT license, with Chromium and
+  Node.js under their own licenses; see LICENSE.electron.txt and
+  LICENSES.chromium.html in Contents/Resources of the built application) and
+  the npm packages that Overleaf's editor depends on, each under its own
+  license.

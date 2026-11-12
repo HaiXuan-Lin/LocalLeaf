@@ -120,6 +120,19 @@ async function main() {
   if (platform === "darwin") {
     const appPath = Path.join(packagedDir, `${pkg.productName}.app`);
     pruneLocales(appPath);
+    // The licences of the Electron runtime travel with the app.
+    for (const [name, target] of [
+      ["LICENSE", "LICENSE.electron.txt"],
+      ["LICENSES.chromium.html", "LICENSES.chromium.html"],
+    ]) {
+      const source = Path.join(packagedDir, name);
+      if (fs.existsSync(source)) {
+        fs.copyFileSync(
+          source,
+          Path.join(appPath, "Contents", "Resources", target),
+        );
+      }
+    }
     fs.mkdirSync(DIST_DIR, { recursive: true });
     result = Path.join(DIST_DIR, `${pkg.productName}.app`);
     fs.rmSync(result, { recursive: true, force: true });

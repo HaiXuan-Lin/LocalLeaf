@@ -109,6 +109,7 @@ async function main() {
   );
 
   copyFile(Path.join(REPO_DIR, "LICENSE"), Path.join(APP_DIR, "LICENSE"));
+  copyFile(Path.join(REPO_DIR, "NOTICE"), Path.join(APP_DIR, "NOTICE"));
 
   const megabytes = (bytes) => (bytes / 1024 / 1024).toFixed(1) + " MB";
   console.log(`staged ${APP_DIR}`);

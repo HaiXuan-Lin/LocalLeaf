@@ -1,0 +1,164 @@
+{
+  "repository": "https://github.com/overleaf/overleaf",
+  "branch": "main",
+  "base": {
+    "commit": "e039ad26c5bf5422eb57b89fc7e57c75055e631d",
+    "date": "2026-09-17"
+  },
+  "localleafFiles": [
+    "desktop/",
+    "services/web/modules/desktop/",
+    "build.sh",
+    "install.sh",
+    "README.md",
+    "NOTICE",
+    "CITATION.cff"
+  ],
+  "keepOursOnMerge": ["README.md"],
+  "ported": [
+    {
+      "upstream": "services/clsi/app/js/LatexRunner.js",
+      "local": "desktop/main/project/Compiler.js",
+      "what": "latexmk command line and the flag for each compiler"
+    },
+    {
+      "upstream": "services/clsi/app/js/SynctexOutputParser.js",
+      "local": "desktop/main/project/Synctex.js",
+      "what": "parsing the output of synctex view/edit"
+    },
+    {
+      "upstream": "services/web/app/src/Features/Metadata/MetaHandler.mjs",
+      "local": "desktop/main/project/Metadata.js",
+      "what": "extracting labels and packages for autocomplete"
+    },
+    {
+      "upstream": "services/web/app/src/Features/Metadata/packageMapping.mjs",
+      "local": "desktop/scripts/stage-app.js",
+      "what": "package -> commands table, converted to JSON at build time"
+    },
+    {
+      "upstream": "services/web/app/src/Features/Project/ProjectRootDocManager.mjs",
+      "local": "desktop/main/project/ProjectSession.js",
+      "what": "finding the main document of a folder"
+    },
+    {
+      "upstream": "services/web/app/src/Features/Project/ProjectEditorHandler.mjs",
+      "local": "desktop/main/project/ProjectSession.js",
+      "what": "shape of the project object sent on joinProject"
+    },
+    {
+      "upstream": "services/web/app/src/Features/Project/SafePath.mjs",
+      "local": "desktop/main/project/FileTypes.js",
+      "what": "which file names are allowed"
+    },
+    {
+      "upstream": "services/web/app/src/Features/Project/UserSettingsHelper.mjs",
+      "local": "desktop/main/AppState.js",
+      "what": "user settings and their defaults"
+    }
+  ],
+  "contract": [
+    {
+      "upstream": "services/web/app/src/router.mjs",
+      "local": "desktop/main/server/Api.js",
+      "what": "HTTP routes the editor calls"
+    },
+    {
+      "upstream": "services/web/app/src/Features/Editor/EditorHttpController.mjs",
+      "local": "desktop/main/server/Api.js",
+      "what": "file-tree requests and their responses"
+    },
+    {
+      "upstream": "services/web/app/src/Features/Compile/CompileController.mjs",
+      "local": "desktop/main/server/Api.js",
+      "what": "compile, output files, SyncTeX and word count requests"
+    },
+    {
+      "upstream": "services/web/app/src/Features/Uploads/ProjectUploadController.mjs",
+      "local": "desktop/main/server/Api.js",
+      "what": "file upload request"
+    },
+    {
+      "upstream": "services/real-time/app/js/Router.js",
+      "local": "desktop/main/project/ProjectSession.js",
+      "what": "socket.io events sent by the editor"
+    },
+    {
+      "upstream": "services/real-time/app/js/WebsocketController.js",
+      "local": "desktop/main/project/ProjectSession.js",
+      "what": "joinProject, joinDoc and applyOtUpdate semantics"
+    },
+    {
+      "upstream": "services/web/frontend/js/features/ide-react/connection/types/socket.ts",
+      "local": "desktop/shims/socket.io.js",
+      "what": "the socket interface the editor expects"
+    },
+    {
+      "upstream": "services/web/app/src/Features/Project/ProjectController.mjs",
+      "local": "desktop/main/server/html.js",
+      "what": "data rendered into the editor page; list of editor themes"
+    },
+    {
+      "upstream": "services/web/app/views/project/ide-react.pug",
+      "local": "desktop/main/server/html.js",
+      "what": "editor page: meta tags and loading screen"
+    },
+    {
+      "upstream": "services/web/app/views/project/ide-react-detached.pug",
+      "local": "desktop/main/server/html.js",
+      "what": "detached PDF page"
+    },
+    {
+      "upstream": "services/web/app/views/layout-base.pug",
+      "local": "desktop/main/server/html.js",
+      "what": "page skeleton and global meta tags"
+    },
+    {
+      "upstream": "services/web/app/views/layout-react.pug",
+      "local": "desktop/main/server/html.js",
+      "what": "page skeleton of React pages"
+    },
+    {
+      "upstream": "services/web/app/src/infrastructure/ExpressLocals.mjs",
+      "local": "desktop/main/server/html.js",
+      "what": "ol-ExposedSettings and other values every page gets"
+    },
+    {
+      "upstream": "services/web/frontend/js/utils/meta.ts",
+      "local": "desktop/main/server/html.js",
+      "what": "names and types of the ol-* meta tags"
+    },
+    {
+      "upstream": "services/web/frontend/stylesheets/pages/editor/loading-screen.scss",
+      "local": "services/web/modules/desktop/frontend/stylesheets/desktop.scss",
+      "what": "CSS variables of the loading-screen logo"
+    }
+  ],
+  "build": [
+    {
+      "upstream": "package.json",
+      "local": "build.sh",
+      "what": "Node.js and Yarn versions (read automatically)"
+    },
+    {
+      "upstream": "services/web/webpack.config.js",
+      "local": "services/web/modules/desktop/webpack.config.desktop.js",
+      "what": "base webpack configuration that the desktop build extends"
+    },
+    {
+      "upstream": "services/web/config/settings.defaults.js",
+      "local": "services/web/modules/desktop/settings.desktop.js",
+      "what": "module slots (overleafModuleImports)"
+    },
+    {
+      "upstream": "services/web/frontend/macros/import-overleaf-module.macro.js",
+      "local": "services/web/modules/desktop/settings.desktop.js",
+      "what": "how module slots are compiled into the front end"
+    },
+    {
+      "upstream": "services/web/app/src/infrastructure/PackageVersions.js",
+      "local": "services/web/modules/desktop/webpack.config.desktop.js",
+      "what": "versions of MathJax, pdf.js and dictionaries copied into the app"
+    }
+  ]
+}

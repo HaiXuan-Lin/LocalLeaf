@@ -1,80 +1,173 @@
 <h1 align="center">
-  <br>
-  <a href="https://www.overleaf.com"><img src="doc/logo.png" alt="Overleaf" width="300"></a>
+  <img src="desktop/resources/icon.png" alt="" width="128"><br>
+  LocalLeaf
 </h1>
 
-<h4 align="center">An open-source online real-time collaborative LaTeX editor.</h4>
-
 <p align="center">
-  <a href="https://github.com/overleaf/overleaf/wiki">Wiki</a> •
-  <a href="https://www.overleaf.com/for/enterprises">Server Pro</a> •
-  <a href="#contributing">Contributing</a> •
-  <a href="https://mailchi.mp/overleaf.com/community-edition-and-server-pro">Mailing List</a> •
-  <a href="#authors">Authors</a> •
-  <a href="#license">License</a>
+  The Overleaf editor as an offline macOS app: open a folder, write LaTeX, compile with your own TeX.
 </p>
 
-<img src="doc/screenshot.png" alt="A screenshot of a project being edited in Overleaf Community Edition">
 <p align="center">
-  Figure 1: A screenshot of a project being edited in Overleaf Community Edition.
+  <img src="desktop/resources/screenshot.png" alt="LocalLeaf with a file tree, the LaTeX source and the compiled PDF side by side" width="820">
 </p>
 
-## Community Edition
+LocalLeaf is a native macOS application built from the source code of
+[Overleaf Community Edition](https://github.com/overleaf/overleaf). It keeps
+Overleaf's editor (the same source and visual editors, PDF viewer, log viewer
+and SyncTeX) and removes everything that needs a server. You open a folder on
+your Mac and work in it, as you would in TeXstudio:
 
-[Overleaf](https://www.overleaf.com) is an open-source online real-time collaborative LaTeX editor. We run a hosted version at [www.overleaf.com](https://www.overleaf.com), but you can also run your own local version, and contribute to the development of Overleaf.
+- files are read from and saved to that folder; nothing is uploaded;
+- documents are compiled with **your own TeX installation** (MacTeX or TeX
+  Live, through `latexmk`); LocalLeaf does not contain TeX;
+- no account, no network connection, no Docker, no database.
 
-> [!CAUTION]
-> Overleaf Community Edition is intended for use in environments where **all** users are trusted. Community Edition is **not** appropriate for scenarios where isolation of users is required due to Sandbox Compiles not being available. When not using Sandboxed Compiles, users have full read and write access to the `sharelatex` container resources (filesystem, network, environment variables) when running LaTeX compiles.
+> LocalLeaf is an independent project. It is **not affiliated with, endorsed
+> by or supported by Overleaf**. Please do not send LocalLeaf questions or bug
+> reports to Overleaf. See [Relationship to Overleaf](#relationship-to-overleaf).
 
-For more information on Sandbox Compiles check out our [documentation](https://docs.overleaf.com/on-premises/configuration/overleaf-toolkit/server-pro-only-configuration/sandboxed-compiles).
+## Build and install
 
-## Enterprise
+```sh
+git clone https://github.com/HaiXuan-Lin/LocalLeaf.git
+cd LocalLeaf
+./build.sh      # builds desktop/dist/LocalLeaf.app from source
+./install.sh    # copies it to /Applications
+```
 
-If you want help installing and maintaining Overleaf in your lab or workplace, we offer an officially supported version called [Overleaf Server Pro](https://www.overleaf.com/for/enterprises). It also includes more features for security (SSO with LDAP or SAML), administration and collaboration (e.g. tracked changes). [Find out more!](https://www.overleaf.com/for/enterprises)
+You need:
 
-## Keeping up to date
+- macOS 13 or later, Apple silicon or Intel, with `git`
+  (`xcode-select --install`);
+- a TeX distribution with `latexmk` to compile documents:
+  [MacTeX](https://www.tug.org/mactex/) or TeX Live;
+- an internet connection **while building** (about 1.7 GB of npm packages and
+  the Electron runtime are downloaded once) and about 4 GB of free disk space.
+  The finished app never uses the network.
 
-Sign up to the [mailing list](https://mailchi.mp/overleaf.com/community-edition-and-server-pro) to get updates on Overleaf releases and development.
+`build.sh` uses your Node.js if it is version 24.18 or newer, and otherwise
+downloads a private copy into `desktop/.toolchain/`. The first build takes
+10–20 minutes, mostly downloading; later builds take a few minutes.
 
-## Installation
+The app is about 280 MB, of which 250 MB is the Electron (Chromium) runtime.
+It is signed ad hoc, which is what a locally built app needs on the Mac that
+built it; to distribute a build to other people it must be signed with a
+Developer ID and notarised.
 
-We have detailed installation instructions in the [Overleaf Toolkit](https://github.com/overleaf/toolkit/).
+Options, mirrors for slow connections and uninstalling are described in
+[desktop/README.md](desktop/README.md), or run `./build.sh --help` and
+`./install.sh --help`.
 
-## Upgrading
+## Using it
 
-If you are upgrading from a previous version of Overleaf, please see the [Release Notes section on the Wiki](https://github.com/overleaf/overleaf/wiki#release-notes) for all of the versions between your current version and the version you are upgrading to.
+- **Open a folder** with _File ▸ Open Folder…_ (⌘O), from the start page, by
+  dropping a folder on the Dock icon, or with `open -a LocalLeaf path/to/folder`.
+- **Edit.** Changes are saved to disk automatically. Files changed by another
+  program (git, a script, another editor) are picked up while they are open.
+- **Compile** with _Recompile_ (⌘S or ⌘↵). `latexmk` runs in the folder of the
+  main document, so the PDF and the auxiliary files are where they would be if
+  you ran it in a terminal. pdfLaTeX, XeLaTeX, LuaLaTeX and LaTeX are
+  available, and a `latexmkrc` in the folder is respected.
+- **SyncTeX**: double-click in the PDF to jump to the source, or use the arrow
+  buttons between editor and PDF.
 
-## Overleaf Docker Image
+The full guide, the list of limitations and a description of how the app works
+are in [desktop/README.md](desktop/README.md).
 
-This repo contains two dockerfiles, [`Dockerfile-base`](server-ce/Dockerfile-base), which builds the
-`sharelatex/sharelatex-base` image, and [`Dockerfile`](server-ce/Dockerfile) which builds the
-`sharelatex/sharelatex` (or "community") image.
+## What is different from Overleaf
 
-The Base image generally contains the basic dependencies like `wget`, plus `texlive`.
-We split this out because it's a pretty heavy set of
-dependencies, and it's nice to not have to rebuild all of that every time.
+Kept: the source and visual editors, autocomplete for commands, references and
+citations, spell check, the file tree with upload and drag and drop, the file
+outline, project-wide search, the PDF viewer, the log viewer with hints,
+SyncTeX, word count, the symbol palette, Vim and Emacs keybindings, editor
+themes, the detached PDF window and all interface translations.
 
-The `sharelatex/sharelatex` image extends the base image and adds the actual Overleaf code
-and services.
+Removed, because they need Overleaf's servers or more than one user: accounts
+and login, the project dashboard, sharing, real-time collaboration, chat,
+comments and track changes, history, templates, the Dropbox, GitHub and
+reference-manager integrations, subscriptions, analytics and AI features.
 
-Use `make build-base` and `make build-community` from `server-ce/` to build these images.
+For version history, use git in your folder.
 
-We use the [Phusion base-image](https://github.com/phusion/baseimage-docker)
-(which is extended by our `base` image) to provide us with a VM-like container
-in which to run the Overleaf services. Baseimage uses the `runit` service
-manager to manage services, and we add our init-scripts from the `server-ce/runit`
-folder.
+## Relationship to Overleaf
 
-## Contributing
+LocalLeaf is a modified version of **Overleaf Community Edition**, the
+open-source online LaTeX editor developed by
+[Overleaf](https://www.overleaf.com) and published at
+<https://github.com/overleaf/overleaf>.
 
-Please see the [CONTRIBUTING](CONTRIBUTING.md) file for information on contributing to the development of Overleaf.
+- **Original work:** Overleaf Community Edition, Copyright © Overleaf,
+  2014–2025, released under the GNU Affero General Public License, version 3.
+- **Version used:** commit
+  [`e039ad26c5`](https://github.com/overleaf/overleaf/commit/e039ad26c5bf5422eb57b89fc7e57c75055e631d)
+  of 17 September 2026. This repository contains Overleaf's complete git
+  history, so every upstream file can be traced to its original commit. The
+  current base is recorded in [`desktop/upstream.json`](desktop/upstream.json).
+- **Modifications** (first published in November 2026): LocalLeaf adds
+  `desktop/`, `services/web/modules/desktop/`, `build.sh`, `install.sh`,
+  `NOTICE` and `CITATION.cff`, replaces this `README.md`, and appends a few
+  lines to `.gitignore`. No other file of Overleaf is changed in the source
+  tree; at build time a short, listed set of front-end modules is swapped for
+  desktop versions
+  ([`replacements.js`](services/web/modules/desktop/replacements.js)).
+  Overleaf's original README is
+  [here](https://github.com/overleaf/overleaf/blob/e039ad26c5bf5422eb57b89fc7e57c75055e631d/README.md).
+- **Names and logos:** "Overleaf" is a trademark of its owner. LocalLeaf uses
+  its own name and its own icon, and Overleaf's logos do not appear in the app.
+  The name Overleaf is used here only to say where the code comes from.
 
-## Authors
+The credit for the editor belongs to the Overleaf team and the contributors to
+the Overleaf repository. LocalLeaf's own part is the local backend, the
+packaging and the adaptation of the interface to a single offline user.
 
-[The Overleaf Team](https://www.overleaf.com/about)
+### Citing
+
+If you refer to LocalLeaf in a publication, please cite Overleaf as well.
+GitHub's _Cite this repository_ button uses [`CITATION.cff`](CITATION.cff);
+in BibTeX:
+
+```bibtex
+@software{overleaf,
+  author  = {{Overleaf}},
+  title   = {Overleaf Community Edition},
+  url     = {https://github.com/overleaf/overleaf},
+  version = {commit e039ad26c5bf5422eb57b89fc7e57c75055e631d},
+  year    = {2026},
+  license = {AGPL-3.0}
+}
+
+@software{localleaf,
+  author  = {Lin, Haixuan},
+  title   = {LocalLeaf: the Overleaf editor as an offline macOS application},
+  url     = {https://github.com/HaiXuan-Lin/LocalLeaf},
+  version = {0.1.0},
+  year    = {2026},
+  note    = {A modified version of Overleaf Community Edition},
+  license = {AGPL-3.0}
+}
+```
+
+## Keeping up with Overleaf
+
+When Overleaf's editor improves, LocalLeaf can take the improvement by merging
+the newer Overleaf:
+
+```sh
+desktop/scripts/update-from-overleaf.sh --check   # what would change for LocalLeaf
+desktop/scripts/update-from-overleaf.sh           # merge it
+./build.sh
+```
+
+LocalLeaf's code is kept apart from Overleaf's so that such merges do not
+conflict, and a checker reports which of the Overleaf files LocalLeaf depends
+on have changed and which new requests, events and extension points the newer
+editor has. The procedure is described in
+[desktop/UPGRADING.md](desktop/UPGRADING.md).
 
 ## License
 
-The code in this repository is released under the GNU AFFERO GENERAL PUBLIC LICENSE, version 3. A copy can be found in the [`LICENSE`](LICENSE) file.
-
-Copyright (c) Overleaf, 2014-2025.
+LocalLeaf is free software under the same license as Overleaf, the
+[GNU Affero General Public License, version 3](LICENSE). It comes with no
+warranty. If you distribute a build of LocalLeaf, the license requires you to
+make the corresponding source code available under the same terms; this
+repository is that source for unmodified builds.

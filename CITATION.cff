@@ -1,0 +1,38 @@
+cff-version: 1.2.0
+message: >-
+  If you refer to LocalLeaf, please cite it together with Overleaf Community
+  Edition, the software it is built on (listed under references).
+type: software
+title: "LocalLeaf: the Overleaf editor as an offline macOS application"
+abstract: >-
+  LocalLeaf is a modified version of Overleaf Community Edition. It packages
+  Overleaf's LaTeX editor as a native macOS application that works on a local
+  folder and compiles with the TeX distribution installed on the computer,
+  without a server, an account or a network connection.
+authors:
+  - family-names: Lin
+    given-names: Haixuan
+repository-code: "https://github.com/HaiXuan-Lin/LocalLeaf"
+license: AGPL-3.0-only
+version: 0.1.0
+date-released: "2026-11-12"
+keywords:
+  - LaTeX
+  - editor
+  - Overleaf
+  - macOS
+  - offline
+references:
+  - type: software
+    title: Overleaf Community Edition
+    authors:
+      - name: Overleaf
+        website: "https://www.overleaf.com"
+    repository-code: "https://github.com/overleaf/overleaf"
+    url: "https://www.overleaf.com"
+    license: AGPL-3.0-only
+    commit: e039ad26c5bf5422eb57b89fc7e57c75055e631d
+    date-released: "2026-09-17"
+    notes: >-
+      The original work. LocalLeaf adds a local backend and packaging, and
+      removes the features that need a server.

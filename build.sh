@@ -148,6 +148,11 @@ else
 fi
 echo "node $(node --version) ($(command -v node))"
 
+# After merging a newer Overleaf: stop here, with a readable list, if
+# something LocalLeaf replaces, reuses or extends is gone or has changed shape.
+node "$DESKTOP_DIR/scripts/check-upstream.js" --quiet ||
+  die "LocalLeaf has to be adapted to this version of Overleaf first (desktop/UPGRADING.md)."
+
 # ---------------------------------------------------------------------- Yarn
 
 # The monorepo pins its package manager ("packageManager": "yarn@x.y.z").

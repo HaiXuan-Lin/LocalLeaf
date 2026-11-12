@@ -377,6 +377,10 @@ class ProjectSession extends EventEmitter {
       case "debug.getHostname":
         return ["localhost"];
       default:
+        // A newer editor may send events this backend does not know yet.
+        if (process.env.LOCALLEAF_DEBUG) {
+          console.warn(`[socket] unhandled event: ${event}`);
+        }
         return [null];
     }
   }

@@ -1,4 +1,7 @@
-# LocalLeaf — the Overleaf editor as an offline macOS app
+# LocalLeaf: building, using and how it works
+
+This is the detailed guide. The overview, and LocalLeaf's relationship to
+Overleaf, are in the [README](../README.md) at the top of the repository.
 
 LocalLeaf is a native macOS application built from this repository. It is the
 Overleaf Community Edition editor (the same React/CodeMirror front end, PDF
@@ -23,7 +26,7 @@ used in the app.
 
 Requirements:
 
-- macOS 12 or later (Apple silicon or Intel) with `git`
+- macOS 13 or later (Apple silicon or Intel) with `git`
   (`xcode-select --install`);
 - an internet connection **while building**: npm packages and the Electron
   runtime are downloaded once. The finished app never uses the network;
@@ -35,15 +38,15 @@ build takes 10–20 minutes, most of it downloading and bundling the editor.
 
 Useful options (`./build.sh --help`, `./install.sh --help`):
 
-| Command | Effect |
-| --- | --- |
+| Command                                          | Effect                                                                            |
+| ------------------------------------------------ | --------------------------------------------------------------------------------- |
 | `./build.sh --dictionaries en_US,en_GB,de_DE,fr` | choose the spell-check languages to bundle (default: English; `all` adds ~270 MB) |
-| `./build.sh --arch x64` / `universal` | build for another CPU architecture |
-| `./build.sh --skip-install` | rebuild without reinstalling packages |
-| `./build.sh --clean` | start from scratch |
-| `./install.sh --user` | install into `~/Applications` |
-| `./install.sh --open` | start the app after installing |
-| `./install.sh --uninstall [--purge]` | remove the app (and its settings) |
+| `./build.sh --arch x64` / `universal`            | build for another CPU architecture                                                |
+| `./build.sh --skip-install`                      | rebuild without reinstalling packages                                             |
+| `./build.sh --clean`                             | start from scratch                                                                |
+| `./install.sh --user`                            | install into `~/Applications`                                                     |
+| `./install.sh --open`                            | start the app after installing                                                    |
+| `./install.sh --uninstall [--purge]`             | remove the app (and its settings)                                                 |
 
 Behind a slow connection or a mirror, these environment variables are
 honoured: `NODEJS_ORG_MIRROR`, `YARN_NPM_REGISTRY_SERVER`,
@@ -162,8 +165,18 @@ Only three kinds of change touch upstream code, all at build time and all
 listed in `services/web/modules/desktop/`: module slots (Overleaf's own
 extension mechanism), a short table of replaced modules (`replacements.js`;
 the build fails if a replaced file disappears upstream), and a few CSS rules.
-No upstream source file is edited (only `.gitignore` gains a few lines), which
-keeps merges from upstream simple.
+No upstream source file is edited (only `.gitignore` gains a few lines, and
+the top-level `README.md` is LocalLeaf's), which keeps merges from upstream
+simple.
+
+### Following Overleaf
+
+`desktop/upstream.json` records the Overleaf commit LocalLeaf is based on and
+every Overleaf file it replaces, reuses, has ported logic from or relies on.
+`desktop/scripts/check-upstream.js` verifies that LocalLeaf still fits the
+checked-out Overleaf (`build.sh` runs it) and can report what changed in a
+newer one; `desktop/scripts/update-from-overleaf.sh` merges a newer Overleaf.
+See [UPGRADING.md](UPGRADING.md).
 
 ### Working on it
 
@@ -177,7 +190,7 @@ LOCALLEAF_DEV=1 yarn workspace @overleaf/web exec webpack \
 cd desktop && LOCALLEAF_DEBUG=1 npx electron . path/to/folder
 ```
 
-`LOCALLEAF_DEBUG=1` logs requests the backend does not handle;
+`LOCALLEAF_DEBUG=1` logs requests and socket events the backend does not handle;
 `LOCALLEAF_USER_DATA=<dir>` uses a separate settings folder.
 
 ## Limitations
