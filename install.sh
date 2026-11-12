@@ -50,6 +50,13 @@ done
 
 die() { printf '\033[31merror:\033[0m %s\n' "$*" >&2; exit 1; }
 
+# Apple's own tools are called by path: Conda, Homebrew and pip install
+# different programs with the same names (codesign, xattr, ...) on the PATH.
+DITTO=/usr/bin/ditto
+XATTR=/usr/bin/xattr
+CODESIGN=/usr/bin/codesign
+OSASCRIPT=/usr/bin/osascript
+
 [ "$(uname -s)" = "Darwin" ] || die "this installs a macOS app; run it on a Mac."
 [ -n "$APP_NAME" ] || die "could not read the app name from desktop/package.json"
 
@@ -68,7 +75,7 @@ run_privileged() {
 quit_running_app() {
   if pgrep -f "$DEST_APP/Contents/MacOS/" >/dev/null 2>&1; then
     echo "Quitting the running $APP_NAME…"
-    osascript -e "tell application id \"$BUNDLE_ID\" to quit" >/dev/null 2>&1 || true
+    "$OSASCRIPT" -e "tell application id \"$BUNDLE_ID\" to quit" >/dev/null 2>&1 || true
     for _ in 1 2 3 4 5 6 7 8 9 10; do
       pgrep -f "$DEST_APP/Contents/MacOS/" >/dev/null 2>&1 || return 0
       sleep 1
@@ -97,6 +104,8 @@ if [ ! -d "$SOURCE_APP" ]; then
   "$REPO_DIR/build.sh"
 fi
 [ -d "$SOURCE_APP" ] || die "build did not produce $SOURCE_APP"
+"$CODESIGN" --verify --deep --strict "$SOURCE_APP" 2>/dev/null ||
+  die "$SOURCE_APP is not signed correctly; run ./build.sh again."
 
 mkdir -p "$DEST_DIR" 2>/dev/null || sudo mkdir -p "$DEST_DIR"
 quit_running_app
@@ -106,9 +115,9 @@ if [ -d "$DEST_APP" ]; then
   run_privileged rm -rf "$DEST_APP"
 fi
 # ditto keeps the symlinks and signatures inside the app bundle intact
-run_privileged ditto "$SOURCE_APP" "$DEST_APP"
+run_privileged "$DITTO" "$SOURCE_APP" "$DEST_APP"
 # Built on this Mac, so there is nothing for Gatekeeper to quarantine.
-xattr -dr com.apple.quarantine "$DEST_APP" 2>/dev/null || true
+"$XATTR" -dr com.apple.quarantine "$DEST_APP" 2>/dev/null || true
 
 # Tell Launch Services about the app (Spotlight, "Open With", Dock drops).
 LSREGISTER="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister"

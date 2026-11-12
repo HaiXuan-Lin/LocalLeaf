@@ -205,30 +205,52 @@ step "[6/6] Packaging"
 APP_NAME="$(sed -n 's/.*"productName": *"\([^"]*\)".*/\1/p' "$DESKTOP_DIR/package.json" | head -n 1)"
 APP_PATH="$DESKTOP_DIR/dist/$APP_NAME.app"
 
+# Apple's own tools are called by path: Conda, Homebrew and pip install
+# different programs with the same names (codesign, xattr, ...) on the PATH.
+SIPS=/usr/bin/sips
+ICONUTIL=/usr/bin/iconutil
+CODESIGN=/usr/bin/codesign
+XATTR=/usr/bin/xattr
+
 if [ "$OS" = "Darwin" ]; then
+  for tool in "$SIPS" "$ICONUTIL" "$CODESIGN" "$XATTR"; do
+    [ -x "$tool" ] || die "$tool is missing (it is part of macOS)."
+  done
   # .icns from the 1024px artwork
   ICONSET="$BUILD_DIR/icon.iconset"
   rm -rf "$ICONSET"
   mkdir -p "$ICONSET"
   for size in 16 32 128 256 512; do
-    sips -z "$size" "$size" "$DESKTOP_DIR/resources/icon.png" \
+    "$SIPS" -z "$size" "$size" "$DESKTOP_DIR/resources/icon.png" \
       --out "$ICONSET/icon_${size}x${size}.png" >/dev/null
-    sips -z "$((size * 2))" "$((size * 2))" "$DESKTOP_DIR/resources/icon.png" \
+    "$SIPS" -z "$((size * 2))" "$((size * 2))" "$DESKTOP_DIR/resources/icon.png" \
       --out "$ICONSET/icon_${size}x${size}@2x.png" >/dev/null
   done
-  iconutil -c icns "$ICONSET" -o "$BUILD_DIR/icon.icns"
+  "$ICONUTIL" -c icns "$ICONSET" -o "$BUILD_DIR/icon.icns"
 fi
 
-(cd "$DESKTOP_DIR" && node scripts/package-app.js "--arch=$ARCH" --platform=darwin >/dev/null)
+# A previous app must not be mistaken for the result of this build.
+rm -rf "$APP_PATH"
+NODE_BIN="$(command -v node)"
+(
+  cd "$DESKTOP_DIR"
+  # system tools first for anything the packager runs itself
+  PATH="/usr/bin:/bin:/usr/sbin:/sbin:$PATH" "$NODE_BIN" scripts/package-app.js \
+    "--arch=$ARCH" --platform=darwin >/dev/null
+)
 [ -d "$APP_PATH" ] || die "packaging did not produce $APP_PATH"
 
 if [ "$OS" = "Darwin" ]; then
   # Apple silicon only runs signed code. An ad-hoc signature is enough for an
   # app that is built and used on the same Mac.
-  xattr -cr "$APP_PATH" 2>/dev/null || true
-  codesign --force --deep --sign - "$APP_PATH" 2>&1 | grep -v 'replacing existing signature' || true
-  codesign --verify --deep --strict "$APP_PATH" ||
+  "$XATTR" -cr "$APP_PATH" 2>/dev/null || true
+  "$CODESIGN" --force --deep --sign - "$APP_PATH" 2>&1 |
+    grep -v 'replacing existing signature' || true
+  if ! "$CODESIGN" --verify --deep --strict "$APP_PATH"; then
+    # An unsigned app must not be left where install.sh would pick it up.
+    rm -rf "$APP_PATH"
     die "the app could not be signed (codesign --verify failed)."
+  fi
 fi
 
 SIZE="$(du -sh "$APP_PATH" | cut -f1)"
