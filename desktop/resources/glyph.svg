@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- The leaf alone, 130x150: used on the loading screen. -->
-<svg xmlns="http://www.w3.org/2000/svg" width="130" height="150" viewBox="0 0 130 150">
-  <defs>
-    <mask id="rib">
-      <rect width="130" height="150" fill="#fff"/>
-      <path d="M20 140 C 42 104, 68 70, 100 38" fill="none" stroke="#000" stroke-width="6" stroke-linecap="round"/>
-    </mask>
-  </defs>
-  <path d="M14 146 C 0 92, 30 32, 118 12 C 126 86, 90 130, 36 136 C 28 137, 20 141, 14 146 Z" fill="#17a999" mask="url(#rib)"/>
+<!-- The leaf of the app icon alone, 130x150: used on the loading screen (desktop.scss). -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130 150">
+  <defs><mask id="r" maskUnits="userSpaceOnUse" x="0" y="0" width="1024" height="1024"><rect width="1024" height="1024" fill="#fff"/><path d="M405 619 L650 374" fill="none" stroke="#000" stroke-width="27" stroke-linecap="round"/></mask></defs>
+  <g transform="translate(65 75) scale(0.25) translate(-505.5 -518.5)">
+    <path d="M290 734 L367 657" fill="none" stroke="#000" stroke-width="27" stroke-linecap="round"/>
+    <path d="M352 672 C178 422 487 304 734 290 C720 537 602 846 352 672 Z" fill="#000" mask="url(#r)"/>
+  </g>
 </svg>

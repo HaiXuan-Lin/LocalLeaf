@@ -450,6 +450,10 @@ describe("http api", () => {
     app = {
       appState: ctx.appState,
       getSession: (id) => (id === ctx.session.id ? ctx.session : null),
+      nativeThemeUpdates: 0,
+      applyNativeTheme() {
+        this.nativeThemeUpdates++;
+      },
     };
   });
   after(() => closeSession(ctx));
@@ -562,6 +566,11 @@ describe("http api", () => {
     await call("POST", "/user/settings", { fontSize: 14, notASetting: 1 });
     assert.equal(ctx.appState.getUserSettings().fontSize, 14);
     assert.equal(ctx.appState.getUserSettings().notASetting, undefined);
+    // the window chrome follows the theme chosen in the editor
+    const updates = app.nativeThemeUpdates;
+    await call("POST", "/user/settings", { overallTheme: "light-" });
+    assert.equal(ctx.appState.getUserSettings().overallTheme, "light-");
+    assert.equal(app.nativeThemeUpdates, updates + 1);
   });
 
   test("unknown routes fall through", async () => {

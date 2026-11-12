@@ -133,7 +133,16 @@ function mainStylesheet(manifest) {
     : "";
 }
 
-function page({ lang, title, head, bodyAttributes, body, scripts, theme }) {
+function page({
+  lang,
+  title,
+  head,
+  bodyAttributes,
+  body,
+  scripts,
+  theme,
+  dataTheme = "light",
+}) {
   return `<!DOCTYPE html>
 <html lang="${escapeHtml(lang)}" class="fixed-size-document">
 <head>
@@ -142,7 +151,7 @@ function page({ lang, title, head, bodyAttributes, body, scripts, theme }) {
 <title translate="no">${escapeHtml(title)}</title>
 ${head.join("\n")}
 </head>
-<body class="application-page${bodyAttributes?.className ? " " + bodyAttributes.className : ""}" data-theme="light" data-initial-theme="${escapeHtml(theme)}">
+<body class="application-page${bodyAttributes?.className ? " " + bodyAttributes.className : ""}" data-theme="${escapeHtml(dataTheme)}" data-initial-theme="${escapeHtml(theme)}">
 ${body}
 ${scripts.join("\n")}
 </body>
@@ -295,9 +304,17 @@ function renderEditorPage({
 }
 
 /** The start page: open a folder, recent folders. */
-function renderWelcomePage({ appState, manifest, config, origin }) {
+function renderWelcomePage({
+  appState,
+  manifest,
+  config,
+  origin,
+  prefersDark = false,
+}) {
   const userSettings = appState.getUserSettings();
   const theme = initialTheme(userSettings.overallTheme);
+  // The page keeps this up to date itself (welcome.tsx); this avoids a flash.
+  const dark = theme === "dark" || (theme === "system" && prefersDark);
   const { css, js } = assetTags(manifest, "modules/desktop/pages/welcome");
   const desktop = { appName: APP_NAME, platform: process.platform };
   const head = [
@@ -319,6 +336,7 @@ function renderWelcomePage({ appState, manifest, config, origin }) {
     bodyAttributes: { className: "desktop-app desktop-welcome" },
     scripts: js,
     theme,
+    dataTheme: dark ? "default" : "light",
   });
 }
 

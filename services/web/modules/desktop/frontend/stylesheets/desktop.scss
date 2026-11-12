@@ -1,8 +1,31 @@
 // Styles that only apply inside the desktop app.
 // <body> carries the class "desktop-app" (see desktop/main/server/html.js).
 
+// The start page follows the theme chosen in the editor's settings:
+// data-theme on <body> is "default" (dark) or "light", as in the editor.
 .desktop-welcome {
-  background: var(--bg-light-secondary, #f4f5f6);
+  --desktop-welcome-bg: var(--bg-light-secondary, #f4f5f6);
+  --desktop-welcome-card-bg: var(--bg-light-primary, #fff);
+  --desktop-welcome-hover-bg: var(--bg-light-secondary, #f4f5f6);
+  --desktop-welcome-text: var(--content-primary, #1b222c);
+  --desktop-welcome-text-secondary: var(--content-secondary, #495365);
+  --desktop-welcome-text-disabled: var(--content-disabled, #8d96a5);
+  --desktop-welcome-border: var(--border-divider, #e7e9ee);
+  --desktop-welcome-danger: var(--content-danger, #b83a33);
+
+  background: var(--desktop-welcome-bg);
+  color: var(--desktop-welcome-text);
+
+  &[data-theme="default"] {
+    --desktop-welcome-bg: var(--bg-dark-primary, #1b222c);
+    --desktop-welcome-card-bg: var(--bg-dark-secondary, #2f3a4c);
+    --desktop-welcome-hover-bg: var(--bg-dark-tertiary, #495365);
+    --desktop-welcome-text: var(--content-primary-dark, #fff);
+    --desktop-welcome-text-secondary: var(--content-secondary-dark, #e7e9ee);
+    --desktop-welcome-text-disabled: var(--content-disabled-dark, #8d96a5);
+    --desktop-welcome-border: var(--border-divider-dark, #495365);
+    --desktop-welcome-danger: var(--content-danger-dark, #f1a695);
+  }
 }
 
 .desktop-welcome-page {
@@ -16,8 +39,8 @@
 .desktop-welcome-card {
   width: 100%;
   max-width: 640px;
-  background: var(--bg-light-primary, #fff);
-  border: 1px solid var(--border-divider, #e7e9ee);
+  background: var(--desktop-welcome-card-bg);
+  border: 1px solid var(--desktop-welcome-border);
   border-radius: 8px;
   padding: 32px;
 }
@@ -25,11 +48,12 @@
 .desktop-welcome-title {
   margin: 0 0 4px;
   font-size: 28px;
+  color: inherit;
 }
 
 .desktop-welcome-tagline {
   margin: 0 0 24px;
-  color: var(--content-secondary, #495365);
+  color: var(--desktop-welcome-text-secondary);
 }
 
 .desktop-welcome-section-title {
@@ -38,14 +62,14 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--content-secondary, #495365);
+  color: var(--desktop-welcome-text-secondary);
 }
 
 .desktop-recent-list {
   list-style: none;
   margin: 0;
   padding: 0;
-  border: 1px solid var(--border-divider, #e7e9ee);
+  border: 1px solid var(--desktop-welcome-border);
   border-radius: 6px;
   max-height: 280px;
   overflow-y: auto;
@@ -54,14 +78,14 @@
 .desktop-recent-item {
   display: flex;
   align-items: center;
-  border-bottom: 1px solid var(--border-divider, #e7e9ee);
+  border-bottom: 1px solid var(--desktop-welcome-border);
 
   &:last-child {
     border-bottom: 0;
   }
 
   &:hover {
-    background: var(--bg-light-secondary, #f4f5f6);
+    background: var(--desktop-welcome-hover-bg);
   }
 }
 
@@ -93,7 +117,7 @@
 
 .desktop-recent-path {
   font-size: 12px;
-  color: var(--content-secondary, #495365);
+  color: var(--desktop-welcome-text-secondary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -103,14 +127,14 @@
 
 .desktop-recent-missing .desktop-recent-name {
   text-decoration: line-through;
-  color: var(--content-disabled, #8d96a5);
+  color: var(--desktop-welcome-text-disabled);
 }
 
 .desktop-recent-remove {
   border: 0;
   background: none;
   padding: 8px 12px;
-  color: var(--content-secondary, #495365);
+  color: var(--desktop-welcome-text-secondary);
   visibility: hidden;
 
   .desktop-recent-item:hover &,
@@ -125,15 +149,17 @@
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: var(--content-secondary, #495365);
+  color: var(--desktop-welcome-text-secondary);
 
   code {
     font-size: 12px;
+    color: inherit;
+    background: none;
   }
 }
 
 .desktop-tex-status-missing {
-  color: var(--content-danger, #b83a33);
+  color: var(--desktop-welcome-danger);
 }
 
 .desktop-tex-status-spacer {
@@ -170,11 +196,47 @@
 // ------------------------------------------------------------ loading screen
 
 // The loading animation fills a logo from the bottom: an "empty" picture with
-// a "full" one growing over it. Use the app's own leaf for both.
-.desktop-app .loading-screen,
-.desktop-app .loading-screen-init-dark,
-.desktop-app .loading-screen-init-light,
-.desktop-app .loading-screen-init-system {
-  --loading-screen-ol-logo-empty-url: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20130%20150%22%3E%3Cdefs%3E%3Cmask%20id=%22r%22%3E%3Crect%20width=%22130%22%20height=%22150%22%20fill=%22%23fff%22/%3E%3Cpath%20d=%22M20%20140%20C%2042%20104,%2068%2070,%20100%2038%22%20fill=%22none%22%20stroke=%22%23000%22%20stroke-width=%226%22%20stroke-linecap=%22round%22/%3E%3C/mask%3E%3C/defs%3E%3Cpath%20d=%22M14%20146%20C%200%2092,%2030%2032,%20118%2012%20C%20126%2086,%2090%20130,%2036%20136%20C%2028%20137,%2020%20141,%2014%20146%20Z%22%20fill=%22%238d96a5%22%20mask=%22url%28%23r%29%22/%3E%3C/svg%3E");
-  --loading-screen-ol-logo-full-url: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20130%20150%22%3E%3Cdefs%3E%3Cmask%20id=%22r%22%3E%3Crect%20width=%22130%22%20height=%22150%22%20fill=%22%23fff%22/%3E%3Cpath%20d=%22M20%20140%20C%2042%20104,%2068%2070,%20100%2038%22%20fill=%22none%22%20stroke=%22%23000%22%20stroke-width=%226%22%20stroke-linecap=%22round%22/%3E%3C/mask%3E%3C/defs%3E%3Cpath%20d=%22M14%20146%20C%200%2092,%2030%2032,%20118%2012%20C%20126%2086,%2090%20130,%2036%20136%20C%2028%20137,%2020%20141,%2014%20146%20Z%22%20fill=%22%2317a999%22%20mask=%22url%28%23r%29%22/%3E%3C/svg%3E");
+// a "full" one growing over it. Use the leaf of the app icon for both: black
+// on a light screen, white on a dark one (desktop/resources/glyph.svg).
+$desktop-leaf-empty: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20130%20150%22%3E%3Cdefs%3E%3Cmask%20id=%22r%22%20maskUnits=%22userSpaceOnUse%22%20x=%220%22%20y=%220%22%20width=%221024%22%20height=%221024%22%3E%3Crect%20width=%221024%22%20height=%221024%22%20fill=%22%23fff%22/%3E%3Cpath%20d=%22M405%20619%20L650%20374%22%20fill=%22none%22%20stroke=%22%23000%22%20stroke-width=%2227%22%20stroke-linecap=%22round%22/%3E%3C/mask%3E%3C/defs%3E%3Cg%20transform=%22translate%2865%2075%29%20scale%280.25%29%20translate%28-505.5%20-518.5%29%22%3E%3Cpath%20d=%22M290%20734%20L367%20657%22%20fill=%22none%22%20stroke=%22%238d96a5%22%20stroke-width=%2227%22%20stroke-linecap=%22round%22/%3E%3Cpath%20d=%22M352%20672%20C178%20422%20487%20304%20734%20290%20C720%20537%20602%20846%20352%20672%20Z%22%20fill=%22%238d96a5%22%20mask=%22url%28%23r%29%22/%3E%3C/g%3E%3C/svg%3E");
+$desktop-leaf-black: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20130%20150%22%3E%3Cdefs%3E%3Cmask%20id=%22r%22%20maskUnits=%22userSpaceOnUse%22%20x=%220%22%20y=%220%22%20width=%221024%22%20height=%221024%22%3E%3Crect%20width=%221024%22%20height=%221024%22%20fill=%22%23fff%22/%3E%3Cpath%20d=%22M405%20619%20L650%20374%22%20fill=%22none%22%20stroke=%22%23000%22%20stroke-width=%2227%22%20stroke-linecap=%22round%22/%3E%3C/mask%3E%3C/defs%3E%3Cg%20transform=%22translate%2865%2075%29%20scale%280.25%29%20translate%28-505.5%20-518.5%29%22%3E%3Cpath%20d=%22M290%20734%20L367%20657%22%20fill=%22none%22%20stroke=%22%23000%22%20stroke-width=%2227%22%20stroke-linecap=%22round%22/%3E%3Cpath%20d=%22M352%20672%20C178%20422%20487%20304%20734%20290%20C720%20537%20602%20846%20352%20672%20Z%22%20fill=%22%23000%22%20mask=%22url%28%23r%29%22/%3E%3C/g%3E%3C/svg%3E");
+$desktop-leaf-white: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20130%20150%22%3E%3Cdefs%3E%3Cmask%20id=%22r%22%20maskUnits=%22userSpaceOnUse%22%20x=%220%22%20y=%220%22%20width=%221024%22%20height=%221024%22%3E%3Crect%20width=%221024%22%20height=%221024%22%20fill=%22%23fff%22/%3E%3Cpath%20d=%22M405%20619%20L650%20374%22%20fill=%22none%22%20stroke=%22%23000%22%20stroke-width=%2227%22%20stroke-linecap=%22round%22/%3E%3C/mask%3E%3C/defs%3E%3Cg%20transform=%22translate%2865%2075%29%20scale%280.25%29%20translate%28-505.5%20-518.5%29%22%3E%3Cpath%20d=%22M290%20734%20L367%20657%22%20fill=%22none%22%20stroke=%22%23fff%22%20stroke-width=%2227%22%20stroke-linecap=%22round%22/%3E%3Cpath%20d=%22M352%20672%20C178%20422%20487%20304%20734%20290%20C720%20537%20602%20846%20352%20672%20Z%22%20fill=%22%23fff%22%20mask=%22url%28%23r%29%22/%3E%3C/g%3E%3C/svg%3E");
+
+@mixin desktop-loading-logo-light {
+  --loading-screen-ol-logo-empty-url: #{$desktop-leaf-empty};
+  --loading-screen-ol-logo-full-url: #{$desktop-leaf-black};
+}
+
+@mixin desktop-loading-logo-dark {
+  --loading-screen-ol-logo-empty-url: #{$desktop-leaf-empty};
+  --loading-screen-ol-logo-full-url: #{$desktop-leaf-white};
+}
+
+// Same structure as frontend/stylesheets/pages/editor/loading-screen.scss:
+// the running editor follows the theme of <body>, the first paint follows the
+// theme the page was rendered with.
+body.desktop-app {
+  .loading-screen {
+    @include desktop-loading-logo-light;
+  }
+
+  &[data-theme="default"] .loading-screen {
+    @include desktop-loading-logo-dark;
+  }
+
+  .loading-screen.loading-screen-init-light {
+    @include desktop-loading-logo-light;
+  }
+
+  .loading-screen.loading-screen-init-dark {
+    @include desktop-loading-logo-dark;
+  }
+
+  .loading-screen.loading-screen-init-system {
+    @include desktop-loading-logo-light;
+
+    @media (prefers-color-scheme: dark) {
+      @include desktop-loading-logo-dark;
+    }
+  }
 }

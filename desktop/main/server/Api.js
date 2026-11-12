@@ -381,6 +381,7 @@ route("POST", "/project/:projectId/settings", async ({ session, request }) => {
 
 route("POST", "/user/settings", async ({ app, request }) => {
   app.appState.updateUserSettings(await readJson(request));
+  app.applyNativeTheme();
   return noContent();
 });
 

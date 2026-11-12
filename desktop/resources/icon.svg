@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- LocalLeaf app icon: a leaf on a folder. Original artwork for this project. -->
+<!-- LocalLeaf app icon: a black leaf on a white tile. Original artwork for this project. -->
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#19b3a2"/>
-      <stop offset="1" stop-color="#0b6b66"/>
-    </linearGradient>
-    <linearGradient id="leaf" x1="0" y1="1" x2="1" y2="0">
-      <stop offset="0" stop-color="#0b6b66"/>
-      <stop offset="1" stop-color="#17a999"/>
-    </linearGradient>
+    <!-- soft shadow under the tile, so that it has an edge on light backgrounds -->
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10"/>
+      <feOffset dy="10"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.3"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
     <mask id="rib">
       <rect width="1024" height="1024" fill="#fff"/>
-      <path d="M388 742 C 470 640, 560 540, 668 438" fill="none" stroke="#000" stroke-width="26" stroke-linecap="round"/>
+      <path d="M405 619 L650 374" fill="none" stroke="#000" stroke-width="27" stroke-linecap="round"/>
     </mask>
   </defs>
   <!-- macOS icon grid: 824px rounded square centred on a 1024px canvas -->
-  <rect x="100" y="100" width="824" height="824" rx="186" fill="url(#bg)"/>
-  <!-- folder -->
-  <path d="M236 372 a48 48 0 0 1 48 -48 h150 a40 40 0 0 1 30 14 l44 50 h232 a48 48 0 0 1 48 48 v292 a48 48 0 0 1 -48 48 h-456 a48 48 0 0 1 -48 -48 z" fill="#fff"/>
-  <!-- leaf -->
-  <path d="M372 760 C 330 610, 420 440, 700 400 C 716 610, 600 730, 430 742 C 410 744, 390 750, 372 760 Z" fill="url(#leaf)" mask="url(#rib)"/>
+  <rect x="100" y="100" width="824" height="824" rx="186" fill="#fff" filter="url(#shadow)"/>
+  <!-- stem -->
+  <path d="M290 734 L367 657" fill="none" stroke="#000" stroke-width="27" stroke-linecap="round"/>
+  <!-- blade, with the midrib cut out -->
+  <path d="M352 672 C178 422 487 304 734 290 C720 537 602 846 352 672 Z" fill="#000" mask="url(#rib)"/>
 </svg>

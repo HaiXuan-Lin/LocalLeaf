@@ -86,7 +86,24 @@ class DesktopApp {
     protocol.handle(SCHEME, (request) => this._handleRequest(request));
     this._registerIpc();
     this.refreshMenu();
-    nativeTheme.themeSource = "system";
+    this.applyNativeTheme();
+  }
+
+  /**
+   * The title bar, dialogs and native menus follow the theme chosen in the
+   * editor's settings, not only the system appearance: a dark editor under a
+   * white title bar looks broken.
+   */
+  applyNativeTheme() {
+    const { overallTheme } = this.appState.getUserSettings();
+    let source = "dark"; // Overleaf's default theme ("") is the dark one
+    if (overallTheme === "light-") source = "light";
+    else if (overallTheme === "system") source = "system";
+    if (nativeTheme.themeSource !== source) nativeTheme.themeSource = source;
+    const background = nativeTheme.shouldUseDarkColors ? "#1b222c" : "#ffffff";
+    for (const win of BrowserWindow.getAllWindows()) {
+      if (!win.isDestroyed()) win.setBackgroundColor(background);
+    }
   }
 
   _loadRendererBuild() {
@@ -635,6 +652,7 @@ class DesktopApp {
               manifest: this.manifest,
               config: this.config,
               origin: ORIGIN,
+              prefersDark: nativeTheme.shouldUseDarkColors,
             }),
           );
         }

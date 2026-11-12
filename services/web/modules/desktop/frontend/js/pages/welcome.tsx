@@ -12,7 +12,25 @@ function prettyPath(path: string) {
   return path.replace(/^\/Users\/[^/]+/, "~").replace(/^\/home\/[^/]+/, "~");
 }
 
+/**
+ * The app keeps the native theme in step with the theme chosen in the
+ * editor's settings (dark, light or system), so the colour scheme the page
+ * sees is the theme to show. <body data-theme> is what Overleaf's styles use.
+ */
+function useTheme() {
+  useEffect(() => {
+    const query = window.matchMedia("(prefers-color-scheme: dark)");
+    const apply = () => {
+      document.body.dataset.theme = query.matches ? "default" : "light";
+    };
+    apply();
+    query.addEventListener("change", apply);
+    return () => query.removeEventListener("change", apply);
+  }, []);
+}
+
 function Welcome() {
+  useTheme();
   const bridge = getBridge();
   const { appName } = getMeta("ol-ExposedSettings");
   const [recent, setRecent] = useState<RecentFolder[]>([]);
