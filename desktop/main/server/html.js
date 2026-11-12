@@ -177,6 +177,7 @@ function renderEditorPage({
   config,
   origin,
   detachRole = "",
+  titleBar = false,
 }) {
   const user = appState.user;
   const userSettings = appState.getUserSettings();
@@ -293,7 +294,13 @@ function renderEditorPage({
     title: `${session.name} - ${APP_NAME}`,
     head,
     body,
-    bodyAttributes: { className: "desktop-app" },
+    bodyAttributes: {
+      // The detached PDF window keeps its ordinary title bar.
+      className:
+        titleBar && detachRole !== "detached"
+          ? "desktop-app desktop-titlebar"
+          : "desktop-app",
+    },
     // The "socket.io client" is the bridge to the local backend.
     scripts: [
       '<script type="text/javascript" src="/socket.io/socket.io.js" defer></script>',
@@ -310,6 +317,7 @@ function renderWelcomePage({
   config,
   origin,
   prefersDark = false,
+  titleBar = false,
 }) {
   const userSettings = appState.getUserSettings();
   const theme = initialTheme(userSettings.overallTheme);
@@ -333,7 +341,11 @@ function renderWelcomePage({
     title: APP_NAME,
     head,
     body: '<main id="desktop-welcome-root"></main>',
-    bodyAttributes: { className: "desktop-app desktop-welcome" },
+    bodyAttributes: {
+      className: titleBar
+        ? "desktop-app desktop-welcome desktop-titlebar"
+        : "desktop-app desktop-welcome",
+    },
     scripts: js,
     theme,
     dataTheme: dark ? "default" : "light",

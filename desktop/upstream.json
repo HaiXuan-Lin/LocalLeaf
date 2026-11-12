@@ -132,6 +132,16 @@
       "upstream": "services/web/frontend/stylesheets/pages/editor/loading-screen.scss",
       "local": "services/web/modules/desktop/frontend/stylesheets/desktop.scss",
       "what": "CSS variables of the loading-screen logo"
+    },
+    {
+      "upstream": "services/web/frontend/stylesheets/pages/editor/toolbar-redesign.scss",
+      "local": "services/web/modules/desktop/frontend/stylesheets/desktop.scss",
+      "what": "class names and height of the toolbar, which is the window's title bar on macOS (40px: TITLE_BAR_HEIGHT in desktop/main/DesktopApp.js)"
+    },
+    {
+      "upstream": "services/web/frontend/js/features/ide-react/components/toolbar/toolbar.tsx",
+      "local": "services/web/modules/desktop/frontend/stylesheets/desktop.scss",
+      "what": "the toolbar's three groups (menus, folder name, buttons), laid out so that the folder name is centred"
     }
   ],
   "build": [

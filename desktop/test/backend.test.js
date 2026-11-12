@@ -21,6 +21,10 @@ const { resolveTexEnvironment } = require("../main/project/TexEnvironment");
 const Synctex = require("../main/project/Synctex");
 const FileTypes = require("../main/project/FileTypes");
 const { handleApiRequest } = require("../main/server/Api");
+const {
+  renderEditorPage,
+  renderWelcomePage,
+} = require("../main/server/html");
 const otText = require("../main/util/vendor").requireVendored(
   "sharejs/text.js",
 );
@@ -580,6 +584,50 @@ describe("http api", () => {
       "/project/aaaaaaaaaaaaaaaaaaaaaaaa/metadata",
     );
     assert.equal(other.status, 404);
+  });
+});
+
+describe("pages", () => {
+  let ctx;
+  const bodyClasses = (html) =>
+    /<body class="([^"]*)"/.exec(html)[1].split(" ");
+  const render = (renderPage, options) =>
+    bodyClasses(
+      renderPage({
+        session: ctx.session,
+        appState: ctx.appState,
+        manifest: {},
+        config: {},
+        origin: "localleaf://app",
+        ...options,
+      }),
+    );
+  before(async () => {
+    ctx = await openSession();
+  });
+  after(() => closeSession(ctx));
+
+  test("only pages of a window without a title bar get the title-bar styles", () => {
+    // macOS: the editor's toolbar is the title bar (class used in desktop.scss)
+    for (const renderPage of [renderEditorPage, renderWelcomePage]) {
+      assert.ok(
+        render(renderPage, { titleBar: true }).includes("desktop-titlebar"),
+      );
+      assert.ok(!render(renderPage, {}).includes("desktop-titlebar"));
+    }
+    // the detached PDF window keeps its ordinary title bar
+    assert.ok(
+      !render(renderEditorPage, {
+        titleBar: true,
+        detachRole: "detached",
+      }).includes("desktop-titlebar"),
+    );
+    assert.ok(
+      render(renderEditorPage, {
+        titleBar: true,
+        detachRole: "detacher",
+      }).includes("desktop-titlebar"),
+    );
   });
 });
 

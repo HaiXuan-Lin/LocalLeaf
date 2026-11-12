@@ -34,6 +34,15 @@ const APP_ROOT = Path.join(__dirname, "..");
 const PRELOAD = Path.join(APP_ROOT, "preload", "preload.js");
 const SOCKET_SHIM = Path.join(APP_ROOT, "shims", "socket.io.js");
 
+// On macOS the windows have no title bar of their own: the top strip of the
+// page (the editor's toolbar) takes its place and the traffic lights are drawn
+// over it. Such a page gets the class "desktop-titlebar" on <body>
+// (server/html.js); the styles are in desktop.scss.
+const HIDDEN_TITLE_BAR = process.platform === "darwin";
+// Height of the editor's toolbar ($toolbar-height in Overleaf's
+// toolbar-redesign.scss). Electron centres the traffic lights in it.
+const TITLE_BAR_HEIGHT = 40;
+
 const PROJECT_URL_RE =
   /^\/project\/([0-9a-f]{24})(?:\/(detached|detacher))?\/?$/;
 // Content-hashed files emitted by webpack never change.
@@ -187,6 +196,14 @@ class DesktopApp {
       show: false,
       title: APP_NAME,
       backgroundColor: nativeTheme.shouldUseDarkColors ? "#1b222c" : "#ffffff",
+      ...(HIDDEN_TITLE_BAR
+        ? {
+            titleBarStyle: "hidden",
+            // Also tells the page where the traffic lights end
+            // (CSS env(titlebar-area-x)); nothing in full screen.
+            titleBarOverlay: { height: TITLE_BAR_HEIGHT },
+          }
+        : {}),
       webPreferences: this._webPreferences(),
     });
     win.once("ready-to-show", () => win.show());
@@ -653,6 +670,7 @@ class DesktopApp {
               config: this.config,
               origin: ORIGIN,
               prefersDark: nativeTheme.shouldUseDarkColors,
+              titleBar: HIDDEN_TITLE_BAR,
             }),
           );
         }
@@ -671,6 +689,7 @@ class DesktopApp {
               config: this.config,
               origin: ORIGIN,
               detachRole: match[2] || "",
+              titleBar: HIDDEN_TITLE_BAR,
             }),
           );
         }
