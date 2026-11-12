@@ -4,3 +4,18 @@
 # user defined files
 .env
 docker-compose.override.yml
+
+# Yarn (Plug'n'Play) install state
+.pnp.cjs
+.pnp.loader.mjs
+.yarn/cache/
+.yarn/unplugged/
+.yarn/install-state.gz
+.yarn/build-state.yml
+
+# desktop app (see desktop/README.md)
+desktop/.toolchain/
+desktop/build/
+desktop/dist/
+desktop/node_modules/
+services/web/.cache/

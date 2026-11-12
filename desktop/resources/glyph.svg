@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- The leaf alone, 130x150: used on the loading screen. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="130" height="150" viewBox="0 0 130 150">
+  <defs>
+    <mask id="rib">
+      <rect width="130" height="150" fill="#fff"/>
+      <path d="M20 140 C 42 104, 68 70, 100 38" fill="none" stroke="#000" stroke-width="6" stroke-linecap="round"/>
+    </mask>
+  </defs>
+  <path d="M14 146 C 0 92, 30 32, 118 12 C 126 86, 90 130, 36 136 C 28 137, 20 141, 14 146 Z" fill="#17a999" mask="url(#rib)"/>
+</svg>

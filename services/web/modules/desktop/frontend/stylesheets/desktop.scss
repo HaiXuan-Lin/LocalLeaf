@@ -1,0 +1,180 @@
+// Styles that only apply inside the desktop app.
+// <body> carries the class "desktop-app" (see desktop/main/server/html.js).
+
+.desktop-welcome {
+  background: var(--bg-light-secondary, #f4f5f6);
+}
+
+.desktop-welcome-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+}
+
+.desktop-welcome-card {
+  width: 100%;
+  max-width: 640px;
+  background: var(--bg-light-primary, #fff);
+  border: 1px solid var(--border-divider, #e7e9ee);
+  border-radius: 8px;
+  padding: 32px;
+}
+
+.desktop-welcome-title {
+  margin: 0 0 4px;
+  font-size: 28px;
+}
+
+.desktop-welcome-tagline {
+  margin: 0 0 24px;
+  color: var(--content-secondary, #495365);
+}
+
+.desktop-welcome-section-title {
+  margin: 28px 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--content-secondary, #495365);
+}
+
+.desktop-recent-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--border-divider, #e7e9ee);
+  border-radius: 6px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.desktop-recent-item {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--border-divider, #e7e9ee);
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  &:hover {
+    background: var(--bg-light-secondary, #f4f5f6);
+  }
+}
+
+.desktop-recent-open {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 0;
+  background: none;
+  text-align: left;
+  color: inherit;
+}
+
+.desktop-recent-text {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.desktop-recent-name {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.desktop-recent-path {
+  font-size: 12px;
+  color: var(--content-secondary, #495365);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  direction: rtl; // keep the end of long paths visible
+  text-align: left;
+}
+
+.desktop-recent-missing .desktop-recent-name {
+  text-decoration: line-through;
+  color: var(--content-disabled, #8d96a5);
+}
+
+.desktop-recent-remove {
+  border: 0;
+  background: none;
+  padding: 8px 12px;
+  color: var(--content-secondary, #495365);
+  visibility: hidden;
+
+  .desktop-recent-item:hover &,
+  &:focus-visible {
+    visibility: visible;
+  }
+}
+
+.desktop-tex-status {
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--content-secondary, #495365);
+
+  code {
+    font-size: 12px;
+  }
+}
+
+.desktop-tex-status-missing {
+  color: var(--content-danger, #b83a33);
+}
+
+.desktop-tex-status-spacer {
+  flex: 1;
+}
+
+// ------------------------------------------------------------------ editor
+
+.desktop-app {
+  // The home button shows a plain icon instead of a logo.
+  .desktop-home-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .desktop-tex-setting-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+
+  // Leftover links to pages of the Overleaf web site.
+  a[href="/user/settings"],
+  a[href="/user/subscription"] {
+    display: none !important;
+  }
+}
+
+// ------------------------------------------------------------ loading screen
+
+// The loading animation fills a logo from the bottom: an "empty" picture with
+// a "full" one growing over it. Use the app's own leaf for both.
+.desktop-app .loading-screen,
+.desktop-app .loading-screen-init-dark,
+.desktop-app .loading-screen-init-light,
+.desktop-app .loading-screen-init-system {
+  --loading-screen-ol-logo-empty-url: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20130%20150%22%3E%3Cdefs%3E%3Cmask%20id=%22r%22%3E%3Crect%20width=%22130%22%20height=%22150%22%20fill=%22%23fff%22/%3E%3Cpath%20d=%22M20%20140%20C%2042%20104,%2068%2070,%20100%2038%22%20fill=%22none%22%20stroke=%22%23000%22%20stroke-width=%226%22%20stroke-linecap=%22round%22/%3E%3C/mask%3E%3C/defs%3E%3Cpath%20d=%22M14%20146%20C%200%2092,%2030%2032,%20118%2012%20C%20126%2086,%2090%20130,%2036%20136%20C%2028%20137,%2020%20141,%2014%20146%20Z%22%20fill=%22%238d96a5%22%20mask=%22url%28%23r%29%22/%3E%3C/svg%3E");
+  --loading-screen-ol-logo-full-url: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20130%20150%22%3E%3Cdefs%3E%3Cmask%20id=%22r%22%3E%3Crect%20width=%22130%22%20height=%22150%22%20fill=%22%23fff%22/%3E%3Cpath%20d=%22M20%20140%20C%2042%20104,%2068%2070,%20100%2038%22%20fill=%22none%22%20stroke=%22%23000%22%20stroke-width=%226%22%20stroke-linecap=%22round%22/%3E%3C/mask%3E%3C/defs%3E%3Cpath%20d=%22M14%20146%20C%200%2092,%2030%2032,%20118%2012%20C%20126%2086,%2090%20130,%2036%20136%20C%2028%20137,%2020%20141,%2014%20146%20Z%22%20fill=%22%2317a999%22%20mask=%22url%28%23r%29%22/%3E%3C/svg%3E");
+}

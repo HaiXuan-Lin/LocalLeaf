@@ -1,0 +1,22 @@
+{
+  "name": "localleaf",
+  "productName": "LocalLeaf",
+  "version": "0.1.0",
+  "description": "Offline, folder-based LaTeX editor built from the Overleaf Community Edition editor",
+  "license": "AGPL-3.0-only",
+  "private": true,
+  "main": "main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test test/*.test.js",
+    "stage": "node scripts/stage-app.js",
+    "package": "node scripts/package-app.js"
+  },
+  "devDependencies": {
+    "@electron/packager": "^19.0.0",
+    "electron": "^45.0.0"
+  },
+  "localleaf": {
+    "bundleId": "app.localleaf.desktop"
+  }
+}
